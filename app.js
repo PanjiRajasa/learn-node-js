@@ -90,6 +90,131 @@ async function readAndWrite() {
     //console.log("successfully write the file")
 }
 
-readAndWrite();
+//readAndWrite();
 
-//
+//removing file (sync way)
+if(fs.existsSync(path.join(__dirname, "./thirdFolder/forDelete.txt"))) {
+    fs.unlinkSync(path.join(__dirname, "./thirdFolder/forDelete.txt"));
+} else {
+    //console.log("file not found.")
+}
+
+//removing file (async way)
+async function deleteFile() {
+
+    const deletePath = path.join(__dirname, "./thirdFolder/hi.txt");
+    try {
+        await fsPromise.unlink(deletePath);
+        //console.log("successfully deleted the file")
+    } catch(err) {
+
+        if(err.code == "ENOENT") {
+            //console.log("file not found");
+        } else {
+            //console.log(`error while deleting the file ${err}`)
+        }
+        
+    }
+}
+
+//deleteFile();
+
+//creating and removing directories
+
+//creating (sync)
+//fs.mkdirSync('stuff');
+
+//removing directory (sync)
+//fs.rmdirSync('stuff');
+
+//creating (sync)
+async function createFileAsync() {
+    try {
+        await fsPromise.mkdir("stuff");
+        console.log("Successfully make directory");
+
+        const data = "File in stuff directory 🤑🥰";
+        await fsPromise.writeFile(path.join(__dirname, "./stuff/stuffFile.txt"), data);
+        console.log("Successfully created a new file in the directory");
+
+    } catch(err) {
+
+        //error handling
+        if(err.code == "EEXIST") {
+            console.log("Directory already exist");
+        } else if(err.code == "ENOENT") {
+            console.log("Directory did not exist");
+        } else if(err.code == "ERR_INVALID_ARG_TYPE") {
+            console.log('The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined');
+        } 
+        else {
+            console.log(`${err}`);
+        }
+    }
+}
+
+//createFileAsync();
+
+//delete file (async)
+async function deleteFileAsync() {
+    try {
+        await fsPromise.rmdir("stuff");
+        console.log("Successfully remove directory");
+    } catch(err) {
+        if(err.code == "ENOENT") {
+            console.log("Directory did not exist");
+        } else {
+            console.log(err);
+        }
+    }
+}
+
+//deleteFileAsync();
+
+//create a server
+
+//plain text server
+const http = require('http');
+
+const server = http.createServer(function(req, res) { 
+    console.log(`request was made ${req.url}`); //every time request was made
+
+    res.writeHead(200, {"content-type": "text/plain"});  //header settings
+    res.end('UwU from my first server!'); //end the server
+});
+
+server.listen(3000, "127.0.0.1"); //set the port
+
+console.log("server is now listening to port 3000");
+
+//application/json server
+const server2 = http.createServer(function(req, res) {
+    console.log(`request was made ${req.url}`);
+
+    res.writeHead(200, {"content-type": "application/json"});
+
+    const data = {
+        "name": "panjie san",
+        "age": 17,
+        "secret code": [
+            {
+                "protocol": 122.222,
+                "alias": "xxx"
+            },
+            {
+                "address": "sunset road",
+                "time": "UTC +99"
+            }
+        ],
+        "game": {
+            "sell the water": "Roblox",
+            "sell the aquarium": "Roblox"
+        }
+    };
+    res.end(JSON.stringify(data, null, 2));
+
+});
+
+server2.listen(4000, "127.0.0.1");
+
+console.log("Second server is now listening to port 4000");
