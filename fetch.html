@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using data from node js server</title>
+</head>
+<body>
+    <h1>Data from server</h1>
+
+    <p>Name: <span id="name">Loading...</span></p>
+    <p>Age: <span id="age">Loading...</span></p>
+
+    <label for="gameList">Game List: </label>
+    <select id="gameSelect" name="gameList">
+        <option disable selected>Loading...</option>
+    </select>
+
+    <p>Secret List</p>
+    <ol id="secretList">
+        <li>Loading...</li>
+    </ol>
+
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch("http://127.0.0.1:4000");
+
+                //if the response not 200-299
+                if(!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json(); //transform the response into JSON
+
+                //name
+                const nameParagraph = document.getElementById("name");
+                nameParagraph.textContent = data.name; //fetch the name data
+
+                //age
+                const ageParagraph = document.getElementById("age");
+                ageParagraph.textContent = data.age;
+                
+                //game list
+                const gameSelect = document.getElementById("gameSelect");
+                gameSelect.innerHTML = '';
+                
+                //loop through game data
+                for(const [key, value] of Object.entries(data.game)) {
+
+                    const gameOption = document.createElement("option");
+                    gameOption.value = value;
+                    gameOption.textContent = `${key} - ${value}`;
+
+                    gameSelect.appendChild(gameOption); //insert the game data to the select tag
+                }
+
+                //secret code list
+                const secretList = document.getElementById("secretList");
+                secretList.innerHTML = '';
+
+                //loop through secret code data
+                data["secret code"].forEach( function(item, index) {
+                    //make list
+                    const list = document.createElement("li");
+                    const formattedData = Object.entries(item)
+                        .map( ( [key,value] ) => {
+                            return `${key}: ${value}`
+                        } )
+                        .join(" - ");
+                    
+                    list.textContent = formattedData;
+
+                    //append the list to the ol
+                    secretList.appendChild(list);
+                });
+
+            } catch(error) {
+
+                //display the error
+                console.error(`Error when fethcing the data: ${error}`);
+
+                const nameParagraph = document.getElementById("name")
+                nameParagraph.textContent = "Failed fetch the data. Please try again.";
+
+                const ageParagraph = document.getElementById("age");
+                ageParagraph.textContent = "Failed fetch the data. Please try again.";
+
+                const gameSelect = document.getElementById("gameSelect");
+                gameSelect.innerHTML = '';
+
+                const gameOption = document.createElement("option");
+                gameOption.textContent = "Data not available";
+
+                const secretList = document.getElementById("secretList");
+                secretList.innerHTML = '';
+
+                const secretListData = document.createElement("li");
+                secretListData.textContent = "Data not available";
+
+                gameSelect.appendChild(gameOption);
+                secretList.appendChild(secretListData);
+            }
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>

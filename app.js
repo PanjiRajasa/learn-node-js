@@ -191,10 +191,14 @@ console.log("server is now listening to port 3000");
 const server2 = http.createServer(function(req, res) {
     console.log(`request was made ${req.url}`);
 
+    res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+    res.setHeader("Access-Control-Allow-Methods", "GET");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
     res.writeHead(200, {"content-type": "application/json"});
 
     const data = {
-        "name": "panjie san",
+        "name": "panjie san UwU",
         "age": 17,
         "secret code": [
             {
@@ -204,6 +208,10 @@ const server2 = http.createServer(function(req, res) {
             {
                 "address": "sunset road",
                 "time": "UTC +99"
+            },
+            {
+                "language": "Kotlin",
+                "framework": "Jetpack Compose"
             }
         ],
         "game": {
