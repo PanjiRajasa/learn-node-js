@@ -226,3 +226,28 @@ const server2 = http.createServer(function(req, res) {
 server2.listen(4000, "127.0.0.1");
 
 console.log("Second server is now listening to port 4000");
+
+
+//Create a readable stream to read data from a file or other source
+//Create a writable stream that allows us to write data to a file
+const readableStreamPath = path.join(__dirname, "./data/dummyData.txt");
+const readableStream = fs.createReadStream(readableStreamPath, "utf-8");
+
+const writableStreamPath = path.join(__dirname, "./data/writableDummyData.txt");
+const writableStream = fs.createWriteStream(writableStreamPath, "utf-8");
+
+//Use the 'data' event to read chunks emitted by the readable stream. 
+readableStream.on("data", function(chunk) { 
+    console.log("new chunk received"); 
+
+    //Write data from the readable stream to the writable stream
+    writableStream.write(chunk, function(error) { 
+        if(error) {console.log(error)} //Log any errors to the console
+    });
+}); 
+
+//Close the streams after writing is complete
+readableStream.on("end", function() {
+    console.log("done reading");
+    writableStream.end(); //close the writable stream
+});
