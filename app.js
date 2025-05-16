@@ -176,56 +176,41 @@ async function deleteFileAsync() {
 //plain text server
 const http = require('http');
 
-const server = http.createServer(function(req, res) { 
-    console.log(`request was made ${req.url}`); //every time request was made
+// const server = http.createServer(function(req, res) { 
+//     console.log(`request was made ${req.url}`); //every time request was made
 
-    res.writeHead(200, {"content-type": "text/plain"});  //header settings
-    res.end('UwU from my first server!'); //end the server
-});
+//     res.writeHead(200, {"content-type": "text/plain"});  //header settings
+//     res.end('UwU from my first server!'); //end the server
+// });
 
-server.listen(3000, "127.0.0.1"); //set the port
+//server.listen(3000, "127.0.0.1"); //set the port
 
-console.log("server is now listening to port 3000");
+//console.log("server is now listening to port 3000");
 
-//application/json server
-const server2 = http.createServer(function(req, res) {
-    console.log(`request was made ${req.url}`);
+//JSON response server
+// const server2 = http.createServer(function(req, res) {
+//     console.log(`request was made ${req.url}`);
 
-    res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
-    res.setHeader("Access-Control-Allow-Methods", "GET");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//     res.setHeader("Access-Control-Allow-Origin", "http://127.0.0.1:5500");
+//     res.setHeader("Access-Control-Allow-Methods", "GET");
+//     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-    res.writeHead(200, {"content-type": "application/json"});
+//     res.writeHead(200, {"content-type": "application/json"});
 
-    const data = {
-        "name": "panjie san UwU",
-        "age": 17,
-        "secret code": [
-            {
-                "protocol": 122.222,
-                "alias": "xxx"
-            },
-            {
-                "address": "sunset road",
-                "time": "UTC +99"
-            },
-            {
-                "language": "Kotlin",
-                "framework": "Jetpack Compose"
-            }
-        ],
-        "game": {
-            "sell the water": "Roblox",
-            "sell the aquarium": "Roblox"
-        }
-    };
-    res.end(JSON.stringify(data, null, 2));
+//     const readableStream = fs.createReadStream(path.join(__dirname, "./server/serverData.json"), 'utf-8');
 
-});
+//     //Log when the process is complete
+//     readableStream.on("end", function() { 
+//         console.log("server data received!"); 
+//     })
 
-server2.listen(4000, "127.0.0.1");
+//     //Pipe the read stream data to the response
+//     readableStream.pipe(res);
+// });
 
-console.log("Second server is now listening to port 4000");
+//server2.listen(4000, "127.0.0.1");
+
+//console.log("Second server is now listening to port 4000");
 
 
 //Create a readable stream to read data from a file or other source
@@ -238,7 +223,7 @@ const writableStream = fs.createWriteStream(writableStreamPath, "utf-8");
 
 //Use the 'data' event to read chunks emitted by the readable stream. 
 readableStream.on("data", function(chunk) { 
-    console.log("new chunk received"); 
+    //console.log("new chunk received"); 
 
     //Write data from the readable stream to the writable stream
     writableStream.write(chunk, function(error) { 
@@ -248,6 +233,94 @@ readableStream.on("data", function(chunk) {
 
 //Close the streams after writing is complete
 readableStream.on("end", function() {
-    console.log("done reading");
+    //console.log("done reading");
     writableStream.end(); //close the writable stream
 });
+
+//pipe
+const readableStreamPipePath = path.join(__dirname, "./pipeFile/readableFile.txt");
+const readableStreamPipe = fs.createReadStream(readableStreamPipePath, "utf-8");
+
+const writableStreamPipePath = path.join(__dirname, "./pipeFile/writableFile.txt");
+const writableStreamPipe = fs.createWriteStream(writableStreamPipePath, "utf-8");
+
+readableStreamPipe.pipe(writableStreamPipe);
+//console.log("pipe transfer success!");
+
+//pipe from sever to console
+//http.get("http://127.0.0.1:4000", function(res) {
+    //res.pipe(process.stdout)
+// });
+
+//pipe from server to file
+const writableStreamServerPath = path.join(__dirname, "./pipeFile/writableServerFile.txt");
+const writableStreamServer = fs.createWriteStream(writableStreamServerPath, "utf-8");
+
+//http.get("http://127.0.0.1:4000", function(res) {res.pipe(writableStreamServer)});
+
+// Serve HTML page using server
+// http.createServer(function(req, res) {
+
+//     console.log(`request was made ${req.url}`)
+//     res.writeHead(200, {"content-type": "text/html"}); //content type
+
+//     const readStream = fs.createReadStream(path.join(__dirname, "./myWebsite.html"), "utf-8"); //readable stream
+
+//     readStream.on("end", function() {
+//         console.log("server data received!");
+//     })
+
+//     readStream.pipe(res);
+
+// }).listen(5000, "127.0.0.1");
+
+
+//Basic routing
+// const server = http.createServer(function(req, res) {
+//     console.log(`[${new Date().toISOString()}] Incoming request: ${req.method} ${req.url}`);//Log incoming request
+
+//     //Handle route paths
+//     if(req.url === "/" || req.url === "/home") {
+
+//         res.writeHead(200, {"content-type": "text/html"}); //Write response header with HTML content type
+
+//         const readableStream = fs.createReadStream(path.join(__dirname, "./myWebsite.html"), "utf-8"); //Create readable stream from HTML file
+
+//         readableStream.pipe(res); //Pipe HTML stream directly to response
+
+//     } 
+//     else if(req.url === "/contact") {
+        
+//         res.writeHead(200, {"content-type": "text/html"}); //Write response header with HTML content type
+
+//         const readableStream = fs.createReadStream(path.join(__dirname, "./contact.html"), "utf-8"); //Create readable stream from HTML file
+
+//         readableStream.pipe(res); //Pipe HTML stream directly to response
+
+//     }
+//     else if(req.url === "/api/data") {
+        
+//         res.writeHead(200, {"content-type": "application/json"}); //Write response header with JSON content type
+
+//         const readableStream = fs.createReadStream(path.join(__dirname, "./server/serverData.json"), "utf-8"); //Create readable stream from JSON file
+
+//         readableStream.pipe(res); //Pipe JSON stream directly to response
+//     }
+//     else if(req.url === "/kakure_meme.webp") {
+//         res.writeHead(200, {"content-type": "image/webp"});//Write response header with WebP image content type
+
+//         fs.createReadStream(path.join(__dirname, "./kakure_meme.webp")).pipe(res);//Stream the WebP image directly to the response
+
+//     }
+//     else {
+
+//         res.writeHead(404, {"content-type": "text/html"}); //Return 404 status and serve 
+
+//         const readableStream = fs.createReadStream(path.join(__dirname, "./404.html"), "utf-8"); //Create readable stream from HTML file
+
+//         readableStream.pipe(res); //Pipe HTML stream directly to response
+
+//     }
+
+// });
+//server.listen(3000, "127.0.0.1"); //Set server on specified port and hostname
