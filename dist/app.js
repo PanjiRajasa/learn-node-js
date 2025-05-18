@@ -262,7 +262,29 @@ const writableStreamServer = fs.createWriteStream(writableStreamServerPath, "utf
 //     }
 // });
 //server.listen(3000, "127.0.0.1"); //Set server on specified port and hostname
-const hello = 10;
-const array1 = ["hi"];
-console.log(`${hello} from ${array1}`);
-console.log("Hmmm");
+//Express js
+const express_1 = __importDefault(require("express"));
+//add express functionality
+const app = (0, express_1.default)();
+//GET request
+app.get(["/", "/home"], function (req, res) {
+    res.send("<h1>Hi from Express</h1>");
+});
+//Serve static files from "image" directory
+app.use("/image", express_1.default.static(path.join(__dirname, "../image")));
+//Handle dynamic route using express route params
+app.get("/profile/:id", function (req, res) {
+    res.send(`
+            <h1 style='text-align:center;'>Welcome, ${req.params.id}</h1>
+
+            <img src='/image/kakure_meme.webp' style='display: flex; justify-content: center; align-items: center; margin:auto;'/>
+    `);
+});
+//Handle 404/unregistered port
+app.use(function (req, res) {
+    res.status(404).send("<h1 style='text-align: center;'>404 Not Found</h1>");
+});
+//listen the app to a port
+app.listen(3000, function () {
+    console.log("Server is running on port 3000");
+});

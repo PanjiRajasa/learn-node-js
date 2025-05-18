@@ -7,9 +7,7 @@
     "test": "pass",
     "build": "tsc",
     "start": "node ./dist/app.js",
-    "watch": "tsc --watch",
-    
-    "backup": "rsync -av ~/Projects/nodejs/ /media/panji/android/Storage/nodejs/"
+    "watch": "tsc --watch"
   },
   "repository": {
     "type": "git",
@@ -23,6 +21,7 @@
   "devDependencies": {
     "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
     "@types/node": "^22.15.18",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
