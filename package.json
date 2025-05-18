@@ -4,7 +4,10 @@
   "description": "Learn node js",
   "main": "app.js",
   "scripts": {
-    "test": "pass"
+    "test": "pass",
+    "build": "tsc",
+    "start": "node ./dist/app.js",
+    "watch": "tsc --watch"
   },
   "repository": {
     "type": "git",

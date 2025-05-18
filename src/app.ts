@@ -1,33 +1,35 @@
-const moduleStuffs = require('./moduleStuffs')
+import moduleStuffs from "./moduleStuffs";
+import * as secondModule from "./anotherModule";
 
 const array = [1,2,3,"Hi"];
 // console.log(moduleStuffs.arrayLengthMessage(array));
 // console.log(moduleStuffs.PI);
 
-const secondModule = require('./anotherModule');
+
 //console.log(secondModule.hi);
 
 //event emitter (built in node js module)
-const events = require('events');
+import EventEmitter from "events";
+import { inherits } from "util";
 
 //custom event
-const eventEmitter = new events.EventEmitter();
+const eventEmitter = new EventEmitter();
 
-const customLog = ([tag, message]) => console.log(`${tag}| message:${message}`);
+const customLog = ([tag, message]: [string, string]) => console.log(`${tag} | message: ${message}`);
 
 eventEmitter.on("custom log", customLog);
 
 //eventEmitter.emit("custom log", ["app.js", "Debug info"] );
 
-//util event
-const util = require('util');
-
 //object constructor that will inherits utils later
-const Identity = function(name) {
-    this.name = name;
-};
+class Identity extends EventEmitter {
+    name: string;
 
-util.inherits(Identity, events.EventEmitter);
+    constructor(name: string) {
+        super();
+        this.name = name;
+    }
+}
 
 //make new objects
 const panji = new Identity("Panji");
@@ -45,15 +47,15 @@ people.forEach( function(it) {
 // vx.emit("saySomething", "hi");
 
 //readfile
-const fs = require('fs');
-const path = require('path');
+import * as fs from "fs";
+import * as path from "path";
 
-const filePath = path.join(__dirname, './folderTest/pleaseReadme.txt')
+const filePath = path.join(__dirname, '../folderTest/pleaseReadme.txt')
 const readMe = fs.readFileSync(filePath, 'utf8');
 //console.log(readMe);
 
 //write file
-const pathWrite = path.join(__dirname, "./folderTest/writeMe.txt")
+const pathWrite = path.join(__dirname, "../folderTest/writeMe.txt")
 const writeMe = fs.writeFileSync(pathWrite, readMe);
 //console.log(writeMe); //undefined -> fs.writeFileSync not return anything
 
@@ -75,7 +77,7 @@ fs.readFile(filePath, 'utf-8', function(err, data) {
 } );
 
 //async and await read and write file (modern node)
-const fsPromise = require("fs/promises")
+import * as fsPromise from "fs/promises";
 
 async function readAndWrite() {
 
@@ -107,8 +109,8 @@ async function deleteFile() {
         await fsPromise.unlink(deletePath);
         //console.log("successfully deleted the file")
     } catch(err) {
-
-        if(err.code == "ENOENT") {
+        
+        if(err instanceof Error && (err as any).code == "ENOENT") {
             //console.log("file not found");
         } else {
             //console.log(`error while deleting the file ${err}`)
@@ -134,18 +136,21 @@ async function createFileAsync() {
         console.log("Successfully make directory");
 
         const data = "File in stuff directory 🤑🥰";
-        await fsPromise.writeFile(path.join(__dirname, "./stuff/stuffFile.txt"), data);
+        await fsPromise.writeFile(path.join(__dirname, "../stuff/stuffFile.txt"), data);
         console.log("Successfully created a new file in the directory");
 
     } catch(err) {
 
         //error handling
-        if(err.code == "EEXIST") {
+        if(err instanceof Error && (err as any).code == "EEXIST") {
             console.log("Directory already exist");
-        } else if(err.code == "ENOENT") {
+
+        } else if(err instanceof Error && (err as any).code == "ENOENT") {
             console.log("Directory did not exist");
-        } else if(err.code == "ERR_INVALID_ARG_TYPE") {
+
+        } else if(err instanceof Error && (err as any).code == "ERR_INVALID_ARG_TYPE") {
             console.log('The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined');
+
         } 
         else {
             console.log(`${err}`);
@@ -160,9 +165,12 @@ async function deleteFileAsync() {
     try {
         await fsPromise.rmdir("stuff");
         console.log("Successfully remove directory");
+        
     } catch(err) {
-        if(err.code == "ENOENT") {
+        if(err instanceof Error && (err as any).code == "ENOENT") {
+
             console.log("Directory did not exist");
+
         } else {
             console.log(err);
         }
@@ -174,7 +182,7 @@ async function deleteFileAsync() {
 //create a server
 
 //plain text server
-const http = require('http');
+import * as http from "http";
 
 // const server = http.createServer(function(req, res) { 
 //     console.log(`request was made ${req.url}`); //every time request was made
@@ -215,10 +223,10 @@ const http = require('http');
 
 //Create a readable stream to read data from a file or other source
 //Create a writable stream that allows us to write data to a file
-const readableStreamPath = path.join(__dirname, "./data/dummyData.txt");
+const readableStreamPath = path.join(__dirname, "../data/dummyData.txt");
 const readableStream = fs.createReadStream(readableStreamPath, "utf-8");
 
-const writableStreamPath = path.join(__dirname, "./data/writableDummyData.txt");
+const writableStreamPath = path.join(__dirname, "../data/writableDummyData.txt");
 const writableStream = fs.createWriteStream(writableStreamPath, "utf-8");
 
 //Use the 'data' event to read chunks emitted by the readable stream. 
@@ -238,10 +246,10 @@ readableStream.on("end", function() {
 });
 
 //pipe
-const readableStreamPipePath = path.join(__dirname, "./pipeFile/readableFile.txt");
+const readableStreamPipePath = path.join(__dirname, "../pipeFile/readableFile.txt");
 const readableStreamPipe = fs.createReadStream(readableStreamPipePath, "utf-8");
 
-const writableStreamPipePath = path.join(__dirname, "./pipeFile/writableFile.txt");
+const writableStreamPipePath = path.join(__dirname, "../pipeFile/writableFile.txt");
 const writableStreamPipe = fs.createWriteStream(writableStreamPipePath, "utf-8");
 
 readableStreamPipe.pipe(writableStreamPipe);
@@ -253,7 +261,7 @@ readableStreamPipe.pipe(writableStreamPipe);
 // });
 
 //pipe from server to file
-const writableStreamServerPath = path.join(__dirname, "./pipeFile/writableServerFile.txt");
+const writableStreamServerPath = path.join(__dirname, "../pipeFile/writableServerFile.txt");
 const writableStreamServer = fs.createWriteStream(writableStreamServerPath, "utf-8");
 
 //http.get("http://127.0.0.1:4000", function(res) {res.pipe(writableStreamServer)});
