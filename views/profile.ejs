@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body>
+    <h1 style="text-align: center;">Welcome, <%= id %></h1>
+    <img src="/image/kakure_meme.webp" style="display: block; margin: auto;" />
+
+    <div style="text-align: center;">
+        <p>Age: <%= data.age %></p>
+        <p>Job: <%= data.job %></p>
+        <p>Hobbies:</p>
+    </div>
+        <ul>
+            <% data.hobbies.forEach(hobby => { %>
+                <li><%= hobby %></li>
+            <% }); %>
+        </ul>
+    
+</body>
+</html>

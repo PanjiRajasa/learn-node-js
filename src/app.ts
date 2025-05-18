@@ -339,9 +339,12 @@ import express, {Express} from "express";
 //add express functionality
 const app: Express = express();
 
+app.set("view engine", "ejs");
+app.set("views", path.join(process.cwd(), "views")); // folder tempat file .ejs disimpan
+
 //GET request
 app.get(["/", "/home"], function(req, res) {
-    res.send("<h1>Hi from Express</h1>");
+    res.sendFile(path.join(process.cwd(), "myWebsite.html"));
 });
 
 //Serve static files from "image" directory
@@ -349,11 +352,16 @@ app.use("/image", express.static(path.join(__dirname, "../image")));
 
 //Handle dynamic route using express route params
 app.get("/profile/:id", function(req, res) {
-    res.send(`
-            <h1 style='text-align:center;'>Welcome, ${req.params.id}</h1>
+    const data: {age: number, job: string, hobbies: string[] } = {
+        age: 17,
+        job: "Secret",
+        hobbies: ["Playing Game", "Eating Sushi", "Yapping"]
+    };
 
-            <img src='/image/kakure_meme.webp' style='display: flex; justify-content: center; align-items: center; margin:auto;'/>
-    `);
+    res.render("profile", {
+        id: req.params.id,
+        data: data
+    });
 });
 
 //Handle 404/unregistered port
