@@ -268,12 +268,21 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views")); // folder tempat file .ejs disimpan
+//debug request
+app.use(function (req, res, next) {
+    console.log(req.url);
+    next();
+});
 //GET request
 app.get(["/", "/home"], function (req, res) {
-    res.sendFile(path.join(process.cwd(), "myWebsite.html"));
+    res.render("myWebsite");
+});
+//GET request
+app.get("/contact", function (req, res) {
+    res.render("contact");
 });
 //Serve static files from "image" directory
-app.use("/image", express_1.default.static(path.join(__dirname, "../image")));
+app.use("/image", express_1.default.static(path.join(__dirname, "../public/image/")));
 //Handle dynamic route using express route params
 app.get("/profile/:id", function (req, res) {
     const data = {

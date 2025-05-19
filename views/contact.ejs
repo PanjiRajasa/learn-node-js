@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact</title>
+
     <style>
         body {
             padding: 16px; background-color: plum; color: white; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: large; text-align: center;
@@ -22,20 +25,9 @@
 </head>
 <body>
     <%- include('partials/header.ejs') %>
+    <h1>Let's Connect!</h1>
+    <p>Let's connect and feel the difference!</p>
 
-    <h1 style="text-align: center;">Welcome, <%= id %></h1>
-    <img src="/image/kakure_meme.webp" style="display: block; margin: auto;" />
-
-    <div style="text-align: center;">
-        <p>Age: <%= data.age %></p>
-        <p>Job: <%= data.job %></p>
-        <p>Hobbies:</p>
-    </div>
-        <ul>
-            <% data.hobbies.forEach(hobby => { %>
-                <li><%= hobby %></li>
-            <% }); %>
-        </ul>
-    
+    <img src="/image/kakure_meme.webp"/>
 </body>
 </html>

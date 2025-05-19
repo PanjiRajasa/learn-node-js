@@ -335,6 +335,7 @@ const writableStreamServer = fs.createWriteStream(writableStreamServerPath, "utf
 
 //Express js
 import express, {Express} from "express";
+import { fileURLToPath } from "url";
 
 //add express functionality
 const app: Express = express();
@@ -342,13 +343,25 @@ const app: Express = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views")); // folder tempat file .ejs disimpan
 
+
+//debug request
+app.use(function(req, res, next) {
+    console.log(req.url);
+    next();
+});
+
 //GET request
 app.get(["/", "/home"], function(req, res) {
-    res.sendFile(path.join(process.cwd(), "myWebsite.html"));
+    res.render("myWebsite");
+});
+
+//GET request
+app.get("/contact", function(req, res) {
+    res.render("contact");
 });
 
 //Serve static files from "image" directory
-app.use("/image", express.static(path.join(__dirname, "../image")));
+app.use("/image", express.static(path.join(__dirname, "../public/image/")));
 
 //Handle dynamic route using express route params
 app.get("/profile/:id", function(req, res) {
