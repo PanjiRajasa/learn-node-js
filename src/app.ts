@@ -335,7 +335,7 @@ const writableStreamServer = fs.createWriteStream(writableStreamServerPath, "utf
 
 //Express js
 import express, {Express} from "express";
-import { fileURLToPath } from "url";
+import bodyParser from 'body-parser';
 
 //add express functionality
 const app: Express = express();
@@ -343,11 +343,24 @@ const app: Express = express();
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views")); // folder tempat file .ejs disimpan
 
+// Body parser config
+app.use(bodyParser.urlencoded({extended: true}));
 
 //debug request
 app.use(function(req, res, next) {
     console.log(req.url);
     next();
+});
+
+//POST request
+app.get("/form", function(req, res) {
+    res.render("form");
+});
+
+app.post("/form", function(req, res) {
+    const {name, email}: any = req.body;
+
+    res.render("result", {name, email});
 });
 
 //GET request
@@ -357,7 +370,12 @@ app.get(["/", "/home"], function(req, res) {
 
 //GET request
 app.get("/contact", function(req, res) {
-    res.render("contact");
+    res.render("contact", {qs: {}});
+});
+
+//query string
+app.get("/contact/search", function(req, res) {
+    res.render("contact", {qs: req.query});
 });
 
 //Serve static files from "image" directory

@@ -264,14 +264,25 @@ const writableStreamServer = fs.createWriteStream(writableStreamServerPath, "utf
 //server.listen(3000, "127.0.0.1"); //Set server on specified port and hostname
 //Express js
 const express_1 = __importDefault(require("express"));
+const body_parser_1 = __importDefault(require("body-parser"));
 //add express functionality
 const app = (0, express_1.default)();
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views")); // folder tempat file .ejs disimpan
+// Body parser config
+app.use(body_parser_1.default.urlencoded({ extended: true }));
 //debug request
 app.use(function (req, res, next) {
     console.log(req.url);
     next();
+});
+//POST request
+app.get("/form", function (req, res) {
+    res.render("form");
+});
+app.post("/form", function (req, res) {
+    const { name, email } = req.body;
+    res.render("result", { name, email });
 });
 //GET request
 app.get(["/", "/home"], function (req, res) {
@@ -279,7 +290,11 @@ app.get(["/", "/home"], function (req, res) {
 });
 //GET request
 app.get("/contact", function (req, res) {
-    res.render("contact");
+    res.render("contact", { qs: {} });
+});
+//query string
+app.get("/contact/search", function (req, res) {
+    res.render("contact", { qs: req.query });
 });
 //Serve static files from "image" directory
 app.use("/image", express_1.default.static(path.join(__dirname, "../public/image/")));
